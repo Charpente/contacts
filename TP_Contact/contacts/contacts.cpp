@@ -48,25 +48,15 @@ Contacts::Contacts()
             qWarning() << query.lastError().text();
         }
     }
-    QElapsedTimer elapsed;
-    elapsed.start();
-
-    insert("D:/Cours/M1/DevLog/Project/myFile0");
-    double rate     = 0;
-    double iElapsed = double(elapsed.elapsed()) / 1000;
-    if (iElapsed)
-        rate = 1000000 / iElapsed;
-    elapsed.restart();
-    std::cout << std::fixed << std::setprecision(2) << std::setfill(' ');
-    std::cout << "  "
-              << " done in " << std::setw(6) << iElapsed << " s - " << std::setw(10) << rate << " inserts/s"
-              << std::endl;
 //    deleteByParam("company","Facebook");
 //    update("city","Toulouse","company","Ynov");
 }
 
 void Contacts::insert(const QString &dir_path)
 {
+    QElapsedTimer elapsed;
+    elapsed.start();
+
     QString dir = dir_path;
     QSqlQuery query;
     query.exec("pragma temp_store = memory");
@@ -111,6 +101,15 @@ void Contacts::insert(const QString &dir_path)
         query.exec();
     }
     db.commit();
+    double rate     = 0;
+    double iElapsed = double(elapsed.elapsed()) / 1000;
+    if (iElapsed)
+        rate = 1000000 / iElapsed;
+    elapsed.restart();
+    std::cout << std::fixed << std::setprecision(2) << std::setfill(' ');
+    std::cout << "  "
+              << " done in " << std::setw(6) << iElapsed << " s - " << std::setw(10) << rate << " inserts/s"
+              << std::endl;
 }
 
 void Contacts::deleteByParam(const QString &key, const QString &value)
@@ -119,6 +118,7 @@ void Contacts::deleteByParam(const QString &key, const QString &value)
     qDebug() << QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value);
     query.exec(QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value));
     db.commit();
+    modal->query().exec();
 }
 
 void Contacts::update(const QString &key1, const QString &value1, const QString &key2, const QString &value2)
@@ -126,6 +126,7 @@ void Contacts::update(const QString &key1, const QString &value1, const QString 
     QSqlQuery query;
     query.exec(QString("Update contacts set %1='%2' where %3 like '%4%'").arg(key1,value1,key2,value2));
     db.commit();
+    modal->query().exec();
 }
 
 void Contacts::exportByParam(const QString &key, const QString &value)

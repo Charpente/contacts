@@ -4,6 +4,7 @@
 #include "contacts_global.h"
 #include <QSqlDatabase>
 #include <QObject>
+#include <QSqlQueryModel>
 #include "./mythread.h"
 
 class CONTACTS_EXPORT Contacts : public QObject
@@ -13,6 +14,7 @@ public:
     Contacts();
     //Mythread * thread;
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlQueryModel*modal = new QSqlQueryModel();
     void insert(const QString &dir_path);
 
     void deleteByParam(const QString &key, const QString &value);

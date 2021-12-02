@@ -17,6 +17,7 @@ Contact::Contact(QWidget *parent, Contacts *c)
     ui->cbxUpdate1->addItems(allColumns);
     ui->cbxUpdate2->addItems(allColumns);
     ui->cbxSearch->addItems(allColumns);
+    ui->cbxExport->addItems(allColumns);
 
 
 
@@ -25,8 +26,8 @@ Contact::Contact(QWidget *parent, Contacts *c)
     QSqlQuery query;
     query.exec(requete);
 
-    modal->setQuery(query);
-    ui->tableView->setModel(modal);
+    _th1->modal->setQuery(query);
+    ui->tableView->setModel(_th1->modal);
 }
 
 Contact::~Contact()
@@ -36,17 +37,11 @@ Contact::~Contact()
     delete ui;
 }
 
-void Contact::refresh()
-{
-    modal->query().exec();
-}
-
 
 void Contact::on_btnDelete_clicked()
 {
     if(!(ui->tbxDelete->text().isEmpty())){
         emit onClickedDelete(ui->cbxDelete->currentText(), ui->tbxDelete->text());
-        refresh();
     }
 }
 
@@ -55,7 +50,6 @@ void Contact::on_btnUpdate_clicked()
 {
     if(!(ui->tbxUpdate1->text().isEmpty()) && !(ui->tbxUpdate2->text().isEmpty())){
         emit onClickedUpdate(ui->cbxUpdate1->currentText(), ui->tbxUpdate1->text(), ui->cbxUpdate2->currentText(), ui->tbxUpdate2->text());
-        refresh();
     }
 }
 
@@ -85,5 +79,19 @@ void Contact::on_tableView_clicked(const QModelIndex &index)
     ui->lineEdit_country->setText(country.toString());
     ui->lineEdit_list->setText(list.toString());
     ui->lineEdit_company->setText(company.toString());
+}
+
+
+void Contact::on_btnImport_clicked()
+{
+    if(!ui->lbFolderPath->text().isNull()){
+        emit onClikedImport(ui->lbFolderPath->text());
+    }
+}
+
+
+void Contact::on_btn_Export_clicked()
+{
+    emit onClickedExport(ui->cbxExport->currentText(), ui->tbxExport->text());
 }
 
