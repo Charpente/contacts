@@ -61,6 +61,8 @@ Contacts::Contacts()
     std::cout << "  "
               << " done in " << std::setw(6) << iElapsed << " s - " << std::setw(10) << rate << " inserts/s"
               << std::endl;
+    deleteByParam("company","Facebook");
+    update("city","Toulouse","company","Ynov");
 }
 
 void Contacts::insert(const QString &dir_path)
@@ -111,19 +113,23 @@ void Contacts::insert(const QString &dir_path)
     db.commit();
 }
 
-void Contacts::deleteByParam(const QString &param)
+void Contacts::deleteByParam(const QString &key, const QString &value)
 {
-
+    QSqlQuery query;
+    query.exec(QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value));
+    db.commit();
 }
 
-void Contacts::update(const QString &key, const QString &value)
+void Contacts::update(const QString &key1, const QString &value1, const QString &key2, const QString &value2)
 {
-
+    QSqlQuery query;
+    query.exec(QString("Update contacts set %1='%2' where %3 like '%4%'").arg(key1,value1,key2,value2));
+    db.commit();
 }
 
-void Contacts::exportByParam(const QString &param)
+void Contacts::exportByParam(const QString &key, const QString &value)
 {
-
+    qDebug() << __FUNCTION__ << key + ' ' + value;
 }
 
 void Contacts::clean()
@@ -139,27 +145,22 @@ void Contacts::clean()
 
 void Contacts::onInsert(const QString &dir_path)
 {
-    m_method = 0;
-    m_param = dir_path;
+    insert(dir_path);
 }
 
-void Contacts::onDelete(const QString &param)
+void Contacts::onDelete(const QString &key, const QString &value)
 {
-    m_method = 1;
-    m_param = param;
+    deleteByParam(key,value);
 }
 
-void Contacts::onUpdate(const QString &key, const QString &value)
+void Contacts::onUpdate(const QString &key1, const QString &value1, const QString &key2, const QString &value2)
 {
-    m_method = 2;
-    m_param = value;
-    m_key = key;
+    update(key1,value1,key2,value2);
 }
 
-void Contacts::onExport(const QString &param)
+void Contacts::onExport(const QString &key, const QString &value)
 {
-    m_method = 3;
-    m_param = param;
+    exportByParam(key,value);
 }
 
 void Contacts::onClose()

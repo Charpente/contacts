@@ -9,28 +9,25 @@
 class CONTACTS_EXPORT Contacts : public QObject
 {
     bool m_exitAsked = false;
-    int m_method = 0;
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    QString m_param;
-    QString m_key;
 public:
     Contacts();
     //Mythread * thread;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     void insert(const QString &dir_path);
 
-    void deleteByParam(const QString &param);
+    void deleteByParam(const QString &key, const QString &value);
 
-    void update(const QString &key, const QString &value);
+    void update(const QString &key1, const QString &value1, const QString &key2, const QString &value2);
 
-    void exportByParam(const QString &param);
+    void exportByParam(const QString &key, const QString &value);
 
     void clean();
 
 public slots:
     void onInsert(const QString &dir_path);
-    void onDelete(const QString &param);
-    void onUpdate(const QString &key, const QString &value);
-    void onExport(const QString &param);
+    void onDelete(const QString &key, const QString &value);
+    void onUpdate(const QString &key1, const QString &value1, const QString &key2, const QString &value2);
+    void onExport(const QString &key, const QString &value);
     void onClose();
 };
 
