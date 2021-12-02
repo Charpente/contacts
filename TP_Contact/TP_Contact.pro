@@ -4,4 +4,4 @@ SUBDIRS += \
     contact \
     contacts \
     tests-contacts \
-    tests-contacts
+    tests-contacts \

@@ -3,11 +3,11 @@
 #include "../contacts/contacts.h"
 
 // add necessary includes here
-//#include "tst_testscontacts.moc"
 
 class TestsContacts : public QObject
 {
     Q_OBJECT
+    Contacts c;
 
 public:
     TestsContacts();
@@ -32,7 +32,6 @@ TestsContacts::~TestsContacts()
 
 void TestsContacts::initTestCase()
 {
-
 }
 
 void TestsContacts::cleanupTestCase()
@@ -42,8 +41,9 @@ void TestsContacts::cleanupTestCase()
 
 void TestsContacts::test_case1()
 {
-
+    //QCOMPARE(c.method(),0);
 }
 
 QTEST_MAIN(TestsContacts)
 
+#include "tst_testscontacts.moc"
