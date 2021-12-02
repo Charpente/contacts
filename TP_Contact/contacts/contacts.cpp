@@ -61,8 +61,8 @@ Contacts::Contacts()
     std::cout << "  "
               << " done in " << std::setw(6) << iElapsed << " s - " << std::setw(10) << rate << " inserts/s"
               << std::endl;
-    deleteByParam("company","Facebook");
-    update("city","Toulouse","company","Ynov");
+//    deleteByParam("company","Facebook");
+//    update("city","Toulouse","company","Ynov");
 }
 
 void Contacts::insert(const QString &dir_path)
@@ -116,6 +116,7 @@ void Contacts::insert(const QString &dir_path)
 void Contacts::deleteByParam(const QString &key, const QString &value)
 {
     QSqlQuery query;
+    qDebug() << QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value);
     query.exec(QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value));
     db.commit();
 }
@@ -134,6 +135,7 @@ void Contacts::exportByParam(const QString &key, const QString &value)
 
 void Contacts::clean()
 {
+    db.open();
     QSqlQuery query;
     query.exec("DROP TABLE contacts");
     if (query.lastError().isValid()) {
@@ -150,6 +152,7 @@ void Contacts::onInsert(const QString &dir_path)
 
 void Contacts::onDelete(const QString &key, const QString &value)
 {
+    qDebug() << __FUNCTION__ << key + ' ' + value;
     deleteByParam(key,value);
 }
 
