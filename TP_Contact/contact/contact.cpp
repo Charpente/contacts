@@ -5,6 +5,7 @@
 #include <QSqlQueryModel>
 #include <iomanip>
 #include <iostream>
+#include <QDebug>
 
 Contact::Contact(QWidget *parent, Contacts *c)
     : QMainWindow(parent)
@@ -13,11 +14,12 @@ Contact::Contact(QWidget *parent, Contacts *c)
     ui->setupUi(this);
     _th1 = c;
     QStringList allColumns ={"firstname", "lastname", "email", "tel", "category", "city", "birth_day","country", "list", "company"};
-    ui->cbxDelete->addItems(allColumns);
+    QStringList allColumnsWithID ={"GUID", "firstname", "lastname", "email", "tel", "category", "city", "birth_day","country", "list", "company"};
+    ui->cbxDelete->addItems(allColumnsWithID);
     ui->cbxUpdate1->addItems(allColumns);
     ui->cbxUpdate2->addItems(allColumns);
-    ui->cbxSearch->addItems(allColumns);
-    ui->cbxExport->addItems(allColumns);
+    ui->cbxSearch->addItems(allColumnsWithID);
+    ui->cbxExport->addItems(allColumnsWithID);
 
 
 
@@ -35,6 +37,15 @@ Contact::~Contact()
     _th1->db.close();
     _th1->clean();
     delete ui;
+}
+
+void Contact::onRefresh(const bool val)
+{
+    if (val){
+        _th1->modal->setQuery(_th1->modal->query());
+        ui->tableView->setModel(_th1->modal);
+        ui->tableView->repaint();
+    }
 }
 
 
@@ -93,5 +104,11 @@ void Contact::on_btnImport_clicked()
 void Contact::on_btn_Export_clicked()
 {
     emit onClickedExport(ui->cbxExport->currentText(), ui->tbxExport->text());
+}
+
+
+void Contact::on_btnSearch_clicked()
+{
+    emit onClickedSearch(ui->cbxSearch->currentText(), ui->tbxSearch->text());
 }
 

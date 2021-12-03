@@ -32,6 +32,7 @@ TestsContacts::~TestsContacts()
 
 void TestsContacts::initTestCase()
 {
+    c.m_exitAsked = false;
 }
 
 void TestsContacts::cleanupTestCase()
@@ -41,7 +42,7 @@ void TestsContacts::cleanupTestCase()
 
 void TestsContacts::test_case1()
 {
-    //QCOMPARE(c.method(),0);
+    QCOMPARE(c.m_exitAsked,false);
 }
 
 QTEST_MAIN(TestsContacts)

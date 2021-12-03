@@ -23,6 +23,10 @@ signals:
     void onClickedUpdate(const QString &key1, const QString &value1, const QString &key2, const QString &value2);
     void onClikedImport(const QString &path);
     void onClickedExport(const QString &key, const QString &value);
+    void onClickedSearch(const QString &key, const QString &value);
+
+public slots:
+    void onRefresh(const bool val);
 
 private slots:
     void on_btnDelete_clicked();
@@ -34,6 +38,8 @@ private slots:
     void on_btnImport_clicked();
 
     void on_btn_Export_clicked();
+
+    void on_btnSearch_clicked();
 
 private:
     Ui::Contact *ui;

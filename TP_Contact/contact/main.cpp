@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
     QObject::connect(&w, &Contact::onClickedUpdate, &c, &Contacts::onUpdate);
     QObject::connect(&w, &Contact::onClikedImport, &c, &Contacts::onInsert);
     QObject::connect(&w, &Contact::onClickedExport, &c, &Contacts::onExport);
+    QObject::connect(&w, &Contact::onClickedSearch, &c, &Contacts::onSearch);
+    QObject::connect(&c, &Contacts::onRefresh, &w, &Contact::onRefresh);
     w.show();
     return a.exec();
 }

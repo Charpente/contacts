@@ -11,13 +11,13 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    contact.cpp
+    contact.cpp \
 
 HEADERS += \
-    contact.h
+    contact.h \
 
 FORMS += \
-    contact.ui
+    contact.ui \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

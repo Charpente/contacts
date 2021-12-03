@@ -8,7 +8,7 @@
 #include <QStandardPaths>
 #include <iomanip>
 #include <iostream>
-
+#include <fstream>
 
 
 Contacts::Contacts()
@@ -48,8 +48,14 @@ Contacts::Contacts()
             qWarning() << query.lastError().text();
         }
     }
-//    deleteByParam("company","Facebook");
-//    update("city","Toulouse","company","Ynov");
+}
+
+void Contacts::search(const QString &key, const QString &value)
+{
+    QString requete = QString("SELECT * FROM contacts where %1 like '%2%'").arg(key,value);
+    QSqlQuery query;
+    query.exec(requete);
+    modal->setQuery(query);
 }
 
 void Contacts::insert(const QString &dir_path)
@@ -118,7 +124,6 @@ void Contacts::deleteByParam(const QString &key, const QString &value)
     qDebug() << QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value);
     query.exec(QString("DELETE FROM contacts where %1 like '%2%'").arg(key,value));
     db.commit();
-    modal->query().exec();
 }
 
 void Contacts::update(const QString &key1, const QString &value1, const QString &key2, const QString &value2)
@@ -126,12 +131,47 @@ void Contacts::update(const QString &key1, const QString &value1, const QString 
     QSqlQuery query;
     query.exec(QString("Update contacts set %1='%2' where %3 like '%4%'").arg(key1,value1,key2,value2));
     db.commit();
-    modal->query().exec();
 }
 
 void Contacts::exportByParam(const QString &key, const QString &value)
 {
-    qDebug() << __FUNCTION__ << key + ' ' + value;
+    qDebug() << QString("Exporting contacts where %1 like '%2%' to .csv, wait ...").arg(key,value);
+
+    QString currentLocation = QString("%1/%2_%3.csv").arg(QDir::currentPath(), key, value) ;
+
+    qDebug() << currentLocation;
+
+    //path du fichier csv cree
+    std::ofstream exportedContacts(currentLocation.toStdString());
+
+
+    QString requete = QString("SELECT * FROM contacts where %1 like '%2%'").arg(key,value);
+    QSqlQuery query;
+    query.exec(requete);
+    if (query.lastError().isValid()) {
+        qWarning() << query.lastError().text();
+    }
+
+    while (query.next()) {
+        QString id = query.value(0).toString();
+        QString GUID = query.value(1).toString();
+        QString firstname = query.value(2).toString();
+        QString lastname = query.value(3).toString();
+        QString email = query.value(4).toString();
+        QString tel = query.value(5).toString();
+        QString category = query.value(6).toString();
+        QString city = query.value(7).toString();
+        QString birth_day = query.value(8).toString();
+        QString country = query.value(9).toString();
+        QString list = query.value(10).toString();
+        QString company = query.value(11).toString();
+
+        QString line = id+ "," +GUID+ "," +firstname+ "," +lastname+ "," +email+ "," +tel+ "," +category+ "," +city+ "," +birth_day+ "," +country+ "," +list+ "," +company+ "\n";
+
+        exportedContacts << line.toStdString();
+    }
+    exportedContacts.close();
+    qDebug() << QString("Done!");
 }
 
 void Contacts::clean()
@@ -149,22 +189,34 @@ void Contacts::clean()
 void Contacts::onInsert(const QString &dir_path)
 {
     insert(dir_path);
+    modal->query().exec();
+    emit onRefresh(true);
 }
 
 void Contacts::onDelete(const QString &key, const QString &value)
 {
-    qDebug() << __FUNCTION__ << key + ' ' + value;
     deleteByParam(key,value);
+    modal->query().exec();
+    emit onRefresh(true);
 }
 
 void Contacts::onUpdate(const QString &key1, const QString &value1, const QString &key2, const QString &value2)
 {
     update(key1,value1,key2,value2);
+    modal->query().exec();
+    emit onRefresh(true);
 }
 
 void Contacts::onExport(const QString &key, const QString &value)
 {
     exportByParam(key,value);
+}
+
+void Contacts::onSearch(const QString &key, const QString &value)
+{
+    search(key,value);
+    modal->query().exec();
+    emit onRefresh(true);
 }
 
 void Contacts::onClose()

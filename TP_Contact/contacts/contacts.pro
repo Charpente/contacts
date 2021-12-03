@@ -12,12 +12,10 @@ CONFIG += c++11
 
 SOURCES += \
     contacts.cpp \
-    mythread.cpp
 
 HEADERS += \
     contacts_global.h \
     contacts.h \
-    mythread.h
 
 # Default rules for deployment.
 unix {
