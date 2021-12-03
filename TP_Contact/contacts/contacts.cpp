@@ -166,7 +166,7 @@ void Contacts::exportByParam(const QString &key, const QString &value)
         QString list = query.value(10).toString();
         QString company = query.value(11).toString();
 
-        QString line = id+ "," +GUID+ "," +firstname+ "," +lastname+ "," +email+ "," +tel+ "," +category+ "," +city+ "," +birth_day+ "," +country+ "," +list+ "," +company+ "\n";
+        QString line = id+ "," +GUID+ "," +firstname+ "," +lastname+ "," +email+ "," +tel+ "," +category+ "," +city+ "," +birth_day+ "," +country+ "," +list+ "," +company.simplified()+"\n";
 
         exportedContacts << line.toStdString();
     }
@@ -210,6 +210,8 @@ void Contacts::onUpdate(const QString &key1, const QString &value1, const QStrin
 void Contacts::onExport(const QString &key, const QString &value)
 {
     exportByParam(key,value);
+    modal->query().exec();
+    emit onRefresh(true);
 }
 
 void Contacts::onSearch(const QString &key, const QString &value)
