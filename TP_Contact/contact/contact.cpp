@@ -30,6 +30,10 @@ Contact::Contact(QWidget *parent, Contacts *c)
 
     _th1->modal->setQuery(query);
     ui->tableView->setModel(_th1->modal);
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(100);
+    ui->progressBar->setValue(100);
+    ui->progressBar->hide();
 }
 
 Contact::~Contact()
@@ -45,6 +49,7 @@ void Contact::onRefresh(const bool val)
         _th1->modal->setQuery(_th1->modal->query());
         ui->tableView->setModel(_th1->modal);
         ui->tableView->repaint();
+        ui->progressBar->hide();
     }
 }
 
@@ -52,6 +57,8 @@ void Contact::onRefresh(const bool val)
 void Contact::on_btnDelete_clicked()
 {
     if(!(ui->tbxDelete->text().isEmpty())){
+        ui->progressBar->show();
+        QApplication::processEvents();
         emit onClickedDelete(ui->cbxDelete->currentText(), ui->tbxDelete->text());
     }
 }
@@ -60,6 +67,8 @@ void Contact::on_btnDelete_clicked()
 void Contact::on_btnUpdate_clicked()
 {
     if(!(ui->tbxUpdate1->text().isEmpty()) && !(ui->tbxUpdate2->text().isEmpty())){
+        ui->progressBar->show();
+        QApplication::processEvents();
         emit onClickedUpdate(ui->cbxUpdate1->currentText(), ui->tbxUpdate1->text(), ui->cbxUpdate2->currentText(), ui->tbxUpdate2->text());
     }
 }
@@ -96,6 +105,8 @@ void Contact::on_tableView_clicked(const QModelIndex &index)
 void Contact::on_btnImport_clicked()
 {
     if(!ui->lbFolderPath->text().isNull()){
+        ui->progressBar->show();
+        QApplication::processEvents();
         emit onClikedImport(ui->lbFolderPath->text());
     }
 }
@@ -103,12 +114,20 @@ void Contact::on_btnImport_clicked()
 
 void Contact::on_btn_Export_clicked()
 {
-    emit onClickedExport(ui->cbxExport->currentText(), ui->tbxExport->text());
+    if(!ui->tbxExport->text().isEmpty()){
+        ui->progressBar->show();
+        QApplication::processEvents();
+        emit onClickedExport(ui->cbxExport->currentText(), ui->tbxExport->text());
+    }
 }
 
 
 void Contact::on_btnSearch_clicked()
 {
-    emit onClickedSearch(ui->cbxSearch->currentText(), ui->tbxSearch->text());
+    if(!ui->tbxSearch->text().isEmpty()){
+        ui->progressBar->show();
+        QApplication::processEvents();
+        emit onClickedSearch(ui->cbxSearch->currentText(), ui->tbxSearch->text());
+    }
 }
 
